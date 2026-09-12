@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { INITIAL_DATA } from '../data/initialData';
+import { formatTelegramUrl, formatExternalUrl } from '../utils/formatters';
 
-const STORAGE_KEY = 'nt_portfolio_data_v2';
+const STORAGE_KEY = 'nt_portfolio_data_v3';
 const AUTH_KEY = 'nt_portfolio_auth';
 
 const PortfolioContext = createContext(null);
@@ -13,9 +14,15 @@ export const PortfolioProvider = ({ children }) => {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
         const parsed = JSON.parse(saved);
-        // Ensure all required sections exist
         return {
-          profile: { ...INITIAL_DATA.profile, ...(parsed.profile || {}) },
+          profile: { 
+            ...INITIAL_DATA.profile, 
+            ...(parsed.profile || {}),
+            // Agar initialData da yangi telegram/email yozilgan bo'lsa va parsed da eski demo bo'lsa, yangisini oladi
+            telegram: formatTelegramUrl(parsed.profile?.telegram || INITIAL_DATA.profile.telegram),
+            email: parsed.profile?.email || INITIAL_DATA.profile.email,
+            location: parsed.profile?.location || INITIAL_DATA.profile.location
+          },
           skills: parsed.skills || INITIAL_DATA.skills,
           projects: parsed.projects || INITIAL_DATA.projects,
           messages: parsed.messages || INITIAL_DATA.messages,
@@ -24,7 +31,15 @@ export const PortfolioProvider = ({ children }) => {
     } catch (e) {
       console.error('Error loading data from localStorage:', e);
     }
-    return INITIAL_DATA;
+    
+    // Format initial telegram
+    return {
+      ...INITIAL_DATA,
+      profile: {
+        ...INITIAL_DATA.profile,
+        telegram: formatTelegramUrl(INITIAL_DATA.profile.telegram)
+      }
+    };
   });
 
   // Auth State
@@ -43,7 +58,7 @@ export const PortfolioProvider = ({ children }) => {
     }
   }, [data]);
 
-  // Handle Multi-Tab synchronization
+  // Multi-Tab synchronization
   useEffect(() => {
     const handleStorageChange = (e) => {
       if (e.key === STORAGE_KEY && e.newValue) {
@@ -63,7 +78,6 @@ export const PortfolioProvider = ({ children }) => {
 
   // Auth methods
   const login = (username, password) => {
-    // Standard Credentials
     if (username.trim() === 'admin' && password === 'admin123') {
       setIsAdminLoggedIn(true);
       localStorage.setItem(AUTH_KEY, 'true');
@@ -80,11 +94,17 @@ export const PortfolioProvider = ({ children }) => {
     setIsAdminDashboardOpen(false);
   };
 
-  // Profile methods
+  // Profile methods with automatic URL sanitation
   const updateProfile = (updatedProfile) => {
+    const sanitized = {
+      ...updatedProfile,
+      telegram: formatTelegramUrl(updatedProfile.telegram),
+      github: updatedProfile.github ? formatExternalUrl(updatedProfile.github, 'https://github.com/') : '',
+      linkedin: updatedProfile.linkedin ? formatExternalUrl(updatedProfile.linkedin, 'https://linkedin.com/in/') : '',
+    };
     setData((prev) => ({
       ...prev,
-      profile: { ...prev.profile, ...updatedProfile }
+      profile: { ...prev.profile, ...sanitized }
     }));
   };
 
@@ -141,7 +161,7 @@ export const PortfolioProvider = ({ children }) => {
     }));
   };
 
-  // Messages methods (Contact section -> Admin panel)
+  // Messages methods
   const sendMessage = (messageData) => {
     const newMsg = {
       ...messageData,
@@ -170,10 +190,17 @@ export const PortfolioProvider = ({ children }) => {
     }));
   };
 
-  // Reset to default data
+  // Reset to initialData.js
   const resetToDefaults = () => {
-    setData(INITIAL_DATA);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_DATA));
+    const freshData = {
+      ...INITIAL_DATA,
+      profile: {
+        ...INITIAL_DATA.profile,
+        telegram: formatTelegramUrl(INITIAL_DATA.profile.telegram)
+      }
+    };
+    setData(freshData);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(freshData));
   };
 
   const value = {

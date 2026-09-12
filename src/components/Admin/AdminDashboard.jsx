@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { formatTelegramUrl } from '../../utils/formatters';
 import { usePortfolio } from '../../context/PortfolioContext';
 import { 
   User, 
@@ -42,6 +43,10 @@ export const AdminDashboard = ({ onOpenProjectModal }) => {
   const [activeTab, setActiveTab] = useState('profile');
   const [profileForm, setProfileForm] = useState({ ...profile });
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  useEffect(() => {
+    setProfileForm({ ...profile });
+  }, [profile]);
 
   // New skill form state
   const [newSkill, setNewSkill] = useState({ name: '', level: 90, category: 'Frontend' });
@@ -350,16 +355,31 @@ export const AdminDashboard = ({ onOpenProjectModal }) => {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-mono text-slate-300 mb-1.5">
-                      Telegram Havolasi
+                    <label className="block text-xs font-mono text-slate-300 mb-1.5 flex items-center justify-between">
+                      <span>Telegram Havolasi yoki Kanal Nomi</span>
+                      {profileForm.telegram && (
+                        <a 
+                          href={formatTelegramUrl(profileForm.telegram)} 
+                          target="_blank" 
+                          rel="noreferrer"
+                          className="text-[11px] text-cyan-400 hover:underline flex items-center gap-1 font-mono"
+                        >
+                          <span>Kanalni sinab ko'rish</span>
+                          <ExternalLink className="w-3 h-3" />
+                        </a>
+                      )}
                     </label>
                     <input
                       type="text"
                       name="telegram"
                       value={profileForm.telegram}
                       onChange={handleProfileChange}
+                      placeholder="@izzatulloh_devm yoki https://t.me/izzatulloh_devm"
                       className="w-full px-4 py-2.5 rounded-xl glass-input text-sm focus:outline-none"
                     />
+                    <p className="text-[11px] text-slate-500 font-mono mt-1">
+                      Kanal yoki profil username'ini (@sizning_kanal) yoki to'liq linkini kiriting.
+                    </p>
                   </div>
 
                   <div>

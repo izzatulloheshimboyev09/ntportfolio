@@ -1,28 +1,34 @@
-import React, { useState, useEffect } from 'react';
-import { usePortfolio } from '../context/PortfolioContext';
-import { 
-  ArrowRight, 
-  Download, 
-  Send, 
-  Mail, 
-  Terminal, 
-  Sparkles, 
+import React, { useState, useEffect } from "react";
+import { usePortfolio } from "../context/PortfolioContext";
+import {
+  ArrowRight,
+  Download,
+  Send,
+  Mail,
+  Terminal,
+  Sparkles,
   Code,
   CheckCircle2,
-  Cpu
-} from 'lucide-react';
-import { Github, Linkedin } from './Icons';
+  Cpu,
+} from "lucide-react";
+import { Github, Linkedin } from "./Icons";
+import { formatTelegramUrl } from "../utils/formatters";
 
 export const Hero = () => {
   const { profile } = usePortfolio();
 
   // Dynamic titles rotation / typing effect
-  const titles = profile.titles && profile.titles.length > 0 
-    ? profile.titles 
-    : [profile.title || "Front-end Developer", "React.js Specialist", "Tailwind CSS Artisan"];
+  const titles =
+    profile.titles && profile.titles.length > 0
+      ? profile.titles
+      : [
+          profile.title || "Front-end Developer",
+          "React.js Specialist",
+          "Tailwind CSS Artisan",
+        ];
 
   const [currentTitleIndex, setCurrentTitleIndex] = useState(0);
-  const [displayedText, setDisplayedText] = useState('');
+  const [displayedText, setDisplayedText] = useState("");
   const [isDeleting, setIsDeleting] = useState(false);
   const [charIndex, setCharIndex] = useState(0);
 
@@ -51,40 +57,46 @@ export const Hero = () => {
   // Level badge color styling
   const getLevelBadge = (level) => {
     switch (level?.toLowerCase()) {
-      case 'junior':
-        return 'bg-blue-500/10 text-blue-400 border-blue-500/30';
-      case 'middle':
-        return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30';
-      case 'senior':
-        return 'bg-gradient-to-r from-cyan-500/20 to-violet-500/20 text-cyan-300 border-cyan-500/40 shadow-neon-cyan/20';
-      case 'lead':
-        return 'bg-gradient-to-r from-amber-500/20 to-rose-500/20 text-amber-300 border-amber-500/40';
+      case "junior":
+        return "bg-blue-500/10 text-blue-400 border-blue-500/30";
+      case "middle":
+        return "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+      case "senior":
+        return "bg-gradient-to-r from-cyan-500/20 to-violet-500/20 text-cyan-300 border-cyan-500/40 shadow-neon-cyan/20";
+      case "lead":
+        return "bg-gradient-to-r from-amber-500/20 to-rose-500/20 text-amber-300 border-amber-500/40";
       default:
-        return 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30';
+        return "bg-cyan-500/10 text-cyan-400 border-cyan-500/30";
     }
   };
 
   const handleDownloadCV = () => {
     // Generates a mock resume download or opens link
     const element = document.createElement("a");
-    const file = new Blob([
-      `CV - ${profile.name}\n` +
-      `Kasb: ${profile.title} (${profile.level})\n` +
-      `Bio: ${profile.bio}\n` +
-      `Email: ${profile.email}\n` +
-      `Tajriba: ${profile.experienceYears} yil\n` +
-      `Telegram: ${profile.telegram}\n` +
-      `GitHub: ${profile.github}\n`
-    ], { type: 'text/plain' });
+    const file = new Blob(
+      [
+        `CV - ${profile.name}\n` +
+          `Kasb: ${profile.title} (${profile.level})\n` +
+          `Bio: ${profile.bio}\n` +
+          `Email: ${profile.email}\n` +
+          `Tajriba: ${profile.experienceYears} yil\n` +
+          `Telegram: ${profile.telegram}\n` +
+          `GitHub: ${profile.github}\n`,
+      ],
+      { type: "text/plain" },
+    );
     element.href = URL.createObjectURL(file);
-    element.download = `${profile.name.replace(/\s+/g, '_')}_Resume.txt`;
+    element.download = `${profile.name.replace(/\s+/g, "_")}_Resume.txt`;
     document.body.appendChild(element);
     element.click();
     document.body.removeChild(element);
   };
 
   return (
-    <section id="hero" className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden cyber-grid">
+    <section
+      id="hero"
+      className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden cyber-grid"
+    >
       {/* Background ambient lighting */}
       <div className="absolute top-1/4 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-cyan-500/15 via-violet-500/15 to-emerald-500/10 rounded-full blur-[120px] pointer-events-none" />
       <div className="absolute top-10 left-10 w-72 h-72 bg-cyan-600/10 rounded-full blur-[90px] pointer-events-none" />
@@ -92,10 +104,8 @@ export const Hero = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          
           {/* Left Column: Bio & Intro */}
           <div className="lg:col-span-7 flex flex-col items-start space-y-6">
-            
             {/* Status & Level Badge */}
             <div className="flex flex-wrap items-center gap-2.5">
               <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 backdrop-blur-md">
@@ -103,7 +113,9 @@ export const Hero = () => {
                 <span>{profile.status || "Loyihalar uchun ochiq"}</span>
               </span>
 
-              <span className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold border backdrop-blur-md ${getLevelBadge(profile.level)}`}>
+              <span
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-mono font-semibold border backdrop-blur-md ${getLevelBadge(profile.level)}`}
+              >
                 <Sparkles className="w-3 h-3" />
                 <span>Daraja: {profile.level || "Senior"}</span>
               </span>
@@ -112,7 +124,8 @@ export const Hero = () => {
             {/* Main Greeting & Name */}
             <div>
               <p className="text-sm md:text-base font-mono text-slate-400 tracking-wider mb-2 flex items-center gap-2">
-                <span className="text-cyan-400">&gt;</span> Assalomu alaykum, men
+                <span className="text-cyan-400">&gt;</span> Assalomu alaykum,
+                men
               </p>
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-black tracking-tight text-white leading-none">
                 <span className="bg-clip-text text-transparent bg-gradient-to-r from-white via-slate-100 to-slate-400">
@@ -155,8 +168,10 @@ export const Hero = () => {
 
             {/* Social Links */}
             <div className="pt-4 flex items-center gap-3">
-              <span className="text-xs font-mono text-slate-500 uppercase tracking-wider mr-1">Aloqa:</span>
-              
+              <span className="text-xs font-mono text-slate-500 uppercase tracking-wider mr-1">
+                Aloqa:
+              </span>
+
               {profile.github && (
                 <a
                   href={profile.github}
@@ -171,7 +186,7 @@ export const Hero = () => {
 
               {profile.telegram && (
                 <a
-                  href={profile.telegram}
+                  href={formatTelegramUrl(profile.telegram)}
                   target="_blank"
                   rel="noreferrer"
                   className="p-2.5 rounded-xl bg-slate-900/60 border border-white/10 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 hover:bg-slate-800/80 transition-all"
@@ -203,19 +218,16 @@ export const Hero = () => {
                 </a>
               )}
             </div>
-
           </div>
 
           {/* Right Column: Cyberpunk Interactive Code Console */}
           <div className="lg:col-span-5 relative">
             <div className="relative mx-auto max-w-md lg:max-w-none">
-              
               {/* Decorative background glow */}
               <div className="absolute -inset-1 rounded-2xl bg-gradient-to-r from-cyan-500/30 via-violet-500/30 to-emerald-500/30 blur-xl opacity-60 group-hover:opacity-100 transition duration-1000 animate-pulse-slow"></div>
 
               {/* Code Card Terminal */}
               <div className="relative rounded-2xl bg-slate-950/90 border border-white/10 shadow-2xl overflow-hidden backdrop-blur-xl">
-                
                 {/* Window Header */}
                 <div className="flex items-center justify-between px-4 py-3 bg-slate-900/80 border-b border-white/10">
                   <div className="flex items-center gap-2">
@@ -227,57 +239,67 @@ export const Hero = () => {
                     <Terminal className="w-3.5 h-3.5 text-cyan-400" />
                     <span>developer.config.ts</span>
                   </div>
-                  <div className="text-[10px] font-mono text-slate-500">UTF-8</div>
+                  <div className="text-[10px] font-mono text-slate-500">
+                    UTF-8
+                  </div>
                 </div>
 
                 {/* Code Window Body */}
                 <div className="p-5 font-mono text-xs sm:text-sm leading-relaxed text-slate-300 space-y-2 select-none overflow-x-auto">
                   <div>
-                    <span className="text-violet-400">const</span>{' '}
-                    <span className="text-cyan-300">developer</span>{' '}
-                    <span className="text-slate-400">=</span>{' '}
+                    <span className="text-violet-400">const</span>{" "}
+                    <span className="text-cyan-300">developer</span>{" "}
+                    <span className="text-slate-400">=</span>{" "}
                     <span className="text-yellow-400">&#123;</span>
                   </div>
 
                   <div className="pl-4">
-                    <span className="text-slate-400">fullName:</span>{' '}
+                    <span className="text-slate-400">fullName:</span>{" "}
                     <span className="text-emerald-300">"{profile.name}"</span>,
                   </div>
 
                   <div className="pl-4">
-                    <span className="text-slate-400">rank:</span>{' '}
-                    <span className="text-cyan-400">"{profile.level} Engineer"</span>,
+                    <span className="text-slate-400">rank:</span>{" "}
+                    <span className="text-cyan-400">
+                      "{profile.level} Engineer"
+                    </span>
+                    ,
                   </div>
 
                   <div className="pl-4">
-                    <span className="text-slate-400">coreStack:</span>{' '}
+                    <span className="text-slate-400">coreStack:</span>{" "}
                     <span className="text-yellow-400">[</span>
-                    <span className="text-amber-300">"React"</span>,{' '}
-                    <span className="text-amber-300">"Tailwind"</span>,{' '}
-                    <span className="text-amber-300">"Vite"</span>,{' '}
+                    <span className="text-amber-300">"React"</span>,{" "}
+                    <span className="text-amber-300">"Tailwind"</span>,{" "}
+                    <span className="text-amber-300">"Vite"</span>,{" "}
                     <span className="text-amber-300">"JS"</span>
                     <span className="text-yellow-400">]</span>,
                   </div>
 
                   <div className="pl-4">
-                    <span className="text-slate-400">experience:</span>{' '}
-                    <span className="text-cyan-300">{profile.experienceYears ? `"${profile.experienceYears} years"` : '"3+ years"'}</span>,
+                    <span className="text-slate-400">experience:</span>{" "}
+                    <span className="text-cyan-300">
+                      {profile.experienceYears
+                        ? `"${profile.experienceYears} years"`
+                        : '"3+ years"'}
+                    </span>
+                    ,
                   </div>
 
                   <div className="pl-4">
-                    <span className="text-slate-400">cleanCodeLover:</span>{' '}
+                    <span className="text-slate-400">cleanCodeLover:</span>{" "}
                     <span className="text-violet-400">true</span>,
                   </div>
 
                   <div className="pl-4">
-                    <span className="text-slate-400">openToRelocate:</span>{' '}
+                    <span className="text-slate-400">openToRelocate:</span>{" "}
                     <span className="text-emerald-400">true</span>,
                   </div>
 
                   <div className="pl-4">
-                    <span className="text-slate-400">craftModernUI:</span>{' '}
-                    <span className="text-violet-400">()</span>{' '}
-                    <span className="text-violet-400">=&gt;</span>{' '}
+                    <span className="text-slate-400">craftModernUI:</span>{" "}
+                    <span className="text-violet-400">()</span>{" "}
+                    <span className="text-violet-400">=&gt;</span>{" "}
                     <span className="text-emerald-300">"Ultra Premium ✨"</span>
                   </div>
 
@@ -290,23 +312,20 @@ export const Hero = () => {
                       <CheckCircle2 className="w-3.5 h-3.5" />
                       <span>Ready to Deploy</span>
                     </div>
-                    <div className="text-slate-500">
-                      Vite v5.x • React 18+
-                    </div>
+                    <div className="text-slate-500">Vite v5.x • React 18+</div>
                   </div>
                 </div>
-
               </div>
 
               {/* Floating tech badge */}
               <div className="absolute -bottom-4 -right-2 bg-slate-900/90 border border-cyan-500/30 rounded-xl px-3 py-2 flex items-center gap-2 shadow-xl backdrop-blur-md">
                 <Cpu className="w-4 h-4 text-cyan-400 animate-pulse" />
-                <span className="text-xs font-mono text-cyan-200">High-Performance Front-end</span>
+                <span className="text-xs font-mono text-cyan-200">
+                  High-Performance Front-end
+                </span>
               </div>
-
             </div>
           </div>
-
         </div>
       </div>
     </section>

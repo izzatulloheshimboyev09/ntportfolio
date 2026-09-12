@@ -1,34 +1,35 @@
-import React, { useState } from 'react';
-import { usePortfolio } from '../context/PortfolioContext';
-import { 
-  Mail, 
-  Send, 
-  MapPin, 
-  Phone, 
-  MessageSquare, 
-  CheckCircle2, 
+import React, { useState } from "react";
+import { usePortfolio } from "../context/PortfolioContext";
+import {
+  Mail,
+  Send,
+  MapPin,
+  Phone,
+  MessageSquare,
+  CheckCircle2,
   Sparkles,
-  ArrowRight
-} from 'lucide-react';
-import { Github, Linkedin } from './Icons';
+  ArrowRight,
+} from "lucide-react";
+import { Github, Linkedin } from "./Icons";
+import { formatTelegramUrl, getTelegramHandle } from "../utils/formatters";
 
 export const Contact = () => {
   const { profile, sendMessage } = usePortfolio();
 
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
+    name: "",
+    email: "",
+    subject: "",
+    message: "",
   });
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -41,7 +42,7 @@ export const Contact = () => {
       sendMessage(formData);
       setLoading(false);
       setSubmitted(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
+      setFormData({ name: "", email: "", subject: "", message: "" });
       setTimeout(() => setSubmitted(false), 6000);
     }, 600);
   };
@@ -49,7 +50,6 @@ export const Contact = () => {
   return (
     <section id="contact" className="py-24 relative bg-slate-950/80">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        
         {/* Section Header */}
         <div className="text-center max-w-3xl mx-auto mb-16">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 mb-3">
@@ -60,31 +60,35 @@ export const Contact = () => {
             Birgalikda Yangi Loyihani Boshlaymizmi?
           </h2>
           <p className="mt-3 text-slate-400 text-sm sm:text-base">
-            G'oyalaringiz yoki hamkorlik takliflaringiz bo'lsa, quyidagi shakl orqali to'g'ridan-to'g'ri xabar qoldiring.
+            G'oyalaringiz yoki hamkorlik takliflaringiz bo'lsa, quyidagi shakl
+            orqali to'g'ridan-to'g'ri xabar qoldiring.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10">
-          
           {/* Left Column: Direct Info Cards */}
           <div className="lg:col-span-5 space-y-6">
-            
             <div className="glass-panel p-6 rounded-2xl border border-white/10 relative overflow-hidden">
               <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none"></div>
-              
+
               <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
                 <Sparkles className="w-4 h-4 text-cyan-400" />
                 To'g'ridan-to'g'ri aloqa
               </h3>
-              
+
               <div className="space-y-4">
                 <div className="flex items-start gap-4">
                   <div className="p-3 rounded-xl bg-slate-900 border border-cyan-500/20 text-cyan-400">
                     <Mail className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="text-xs font-mono text-slate-500 uppercase tracking-wider block">Elektron Pochta</span>
-                    <a href={`mailto:${profile.email}`} className="text-sm font-medium text-slate-200 hover:text-cyan-400 transition-colors">
+                    <span className="text-xs font-mono text-slate-500 uppercase tracking-wider block">
+                      Elektron Pochta
+                    </span>
+                    <a
+                      href={`mailto:${profile.email}`}
+                      className="text-sm font-medium text-slate-200 hover:text-cyan-400 transition-colors"
+                    >
                       {profile.email}
                     </a>
                   </div>
@@ -95,9 +99,16 @@ export const Contact = () => {
                     <Send className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="text-xs font-mono text-slate-500 uppercase tracking-wider block">Telegram</span>
-                    <a href={profile.telegram} target="_blank" rel="noreferrer" className="text-sm font-medium text-slate-200 hover:text-emerald-400 transition-colors">
-                      {profile.telegram.replace('https://t.me/', '@')}
+                    <span className="text-xs font-mono text-slate-500 uppercase tracking-wider block">
+                      Telegram
+                    </span>
+                    <a
+                      href={formatTelegramUrl(profile.telegram)}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="text-sm font-medium text-slate-200 hover:text-emerald-400 transition-colors"
+                    >
+                      {getTelegramHandle(profile.telegram)}
                     </a>
                   </div>
                 </div>
@@ -107,7 +118,9 @@ export const Contact = () => {
                     <MapPin className="w-5 h-5" />
                   </div>
                   <div>
-                    <span className="text-xs font-mono text-slate-500 uppercase tracking-wider block">Manzil</span>
+                    <span className="text-xs font-mono text-slate-500 uppercase tracking-wider block">
+                      Manzil
+                    </span>
                     <span className="text-sm font-medium text-slate-200">
                       {profile.location || "Toshkent, O'zbekiston"}
                     </span>
@@ -130,23 +143,25 @@ export const Contact = () => {
             {/* Admin Notice Pill */}
             <div className="p-4 rounded-xl bg-slate-900/60 border border-white/5 text-xs text-slate-400 font-mono flex items-center gap-2">
               <span className="text-cyan-400">&bull;</span>
-              Ushbu formadan yuborilgan xabarlar darhol sayt Admin panelida aks etadi.
+              Ushbu formadan yuborilgan xabarlar darhol sayt Admin panelida aks
+              etadi.
             </div>
-
           </div>
 
           {/* Right Column: Contact Form */}
           <div className="lg:col-span-7">
             <div className="glass-panel p-8 rounded-2xl border border-white/10 relative">
-              
               {submitted ? (
                 <div className="py-12 text-center space-y-4">
                   <div className="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex items-center justify-center mx-auto">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
-                  <h3 className="text-2xl font-bold text-white">Xabaringiz Qabul Qilindi!</h3>
+                  <h3 className="text-2xl font-bold text-white">
+                    Xabaringiz Qabul Qilindi!
+                  </h3>
                   <p className="text-slate-400 text-sm max-w-md mx-auto">
-                    Katta rahmat! Xabaringiz to'g'ridan-to'g'ri tizimga yuborildi. Tez orada siz bilan bog'lanaman.
+                    Katta rahmat! Xabaringiz to'g'ridan-to'g'ri tizimga
+                    yuborildi. Tez orada siz bilan bog'lanaman.
                   </p>
                   <button
                     onClick={() => setSubmitted(false)}
@@ -175,7 +190,8 @@ export const Contact = () => {
 
                     <div>
                       <label className="block text-xs font-mono text-slate-300 mb-2">
-                        Email Manzilingiz <span className="text-cyan-400">*</span>
+                        Email Manzilingiz{" "}
+                        <span className="text-cyan-400">*</span>
                       </label>
                       <input
                         type="email"
@@ -234,12 +250,9 @@ export const Contact = () => {
                   </button>
                 </form>
               )}
-
             </div>
           </div>
-
         </div>
-
       </div>
     </section>
   );
